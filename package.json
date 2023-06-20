@@ -1,0 +1,22 @@
+{
+  "name": "connetwork-planing-and-costcontrol",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NiebAnupat/Connetwork-Planing-And-CostControl.git"
+  },
+  "author": "Code.Dev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NiebAnupat/Connetwork-Planing-And-CostControl/issues"
+  },
+  "homepage": "https://github.com/NiebAnupat/Connetwork-Planing-And-CostControl#readme",
+  "dependencies": {
+    "concurrently": "^8.2.0",
+    "nodemon": "^2.0.22"
+  }
+}
