@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "frontend:dev": "npm run dev --prefix Frontend ",
+    "backend:dev": "npm run dev --prefix Backend ",
+    "dev": "concurrently \"npm run frontend:dev\" \"npm run backend:dev\"",
+    "setup": "npm install --prefix Frontend && npm install --prefix Backend"
   },
   "repository": {
     "type": "git",
@@ -16,7 +20,6 @@
   },
   "homepage": "https://github.com/NiebAnupat/Connetwork-Planing-And-CostControl#readme",
   "dependencies": {
-    "concurrently": "^8.2.0",
-    "nodemon": "^2.0.22"
+    "concurrently": "^8.2.0"
   }
 }

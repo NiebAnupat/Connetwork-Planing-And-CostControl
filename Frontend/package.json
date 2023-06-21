@@ -22,6 +22,7 @@
     "@types/node": "20.3.1",
     "@types/react": "18.2.12",
     "@types/react-dom": "18.2.5",
+    "connetwork-planing-and-costcontrol": "file:..",
     "next": "13.4.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
