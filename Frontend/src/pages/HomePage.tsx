@@ -1,16 +1,16 @@
 import Head from "next/head";
 import styles from "@/styles/HomePage.module.css";
-import {Title} from "@mantine/core";
+import { Title } from "@mantine/core";
 
 export default function HomePage() {
   return (
     <>
       <Head>
-        <title>HomePage | Connetwork Project</title>
+        <title>HomePage | Connetwork</title>
       </Head>
 
       <main className={styles.main}>
-        <Title>DashBoard</Title>
+        <Title>Dashboard</Title>
       </main>
     </>
   );

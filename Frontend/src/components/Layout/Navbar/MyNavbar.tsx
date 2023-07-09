@@ -42,8 +42,8 @@ export default function MyNavbar({ opened }: { opened: boolean }) {
     {
       icon: <IconTable size="1rem" />,
       color: "teal",
-      label: "รายการวัสดุและค่าใช้จ่าย",
-      href: "/BoqTable",
+      label: "โปรเจคทั้งหมด",
+      href: "/AllProject",
     },
   ];
 
@@ -52,7 +52,7 @@ export default function MyNavbar({ opened }: { opened: boolean }) {
       p="md"
       hiddenBreakpoint="sm"
       hidden={!opened}
-      width={{ sm: 200, lg: 300 }}
+      width={{ sm: 200, lg: 230 }}
     >
       <Navbar.Section grow>
         {NavLinkData.map((link) => (

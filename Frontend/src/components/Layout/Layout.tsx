@@ -25,6 +25,7 @@ export default function Layout({ children }: PropsWithChildren) {
   return (
     <AppShell
       hidden={isIndex}
+      padding={0}
       styles={{
         main: {
           background:
@@ -38,7 +39,7 @@ export default function Layout({ children }: PropsWithChildren) {
       navbar={<MyNavbar opened={!opened} />}
       // Header
       header={
-        <Header height={{ base: 50, md: 70 }} p="md">
+        <Header height={{ base: 50, md: 60 }} p="md">
           <div
             style={{
               display: "flex",
