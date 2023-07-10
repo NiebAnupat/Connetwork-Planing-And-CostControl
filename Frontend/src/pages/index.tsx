@@ -39,7 +39,7 @@ export default function Home() {
 
       <main className={`${styles.main}`}>
         <p className={styles.subtitle}>Welcome to</p>
-        <h1 className={styles.title}>Connetwork Project</h1>
+        <h1 className={styles.title}>Connetwork</h1>
         <Box className={styles.box}>
           <TextInput
             label="Username"

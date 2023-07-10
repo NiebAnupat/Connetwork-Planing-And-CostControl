@@ -8,9 +8,8 @@ import {
   TextInput,
   Textarea,
   Box,
-  Button
 } from "@mantine/core";
-import ProjectTable from "@/components/Layout/boqTable/ProjectTable";
+import ProjectTable from "@/components/Layout/Project/ProjectTable";
 
 export default function AllProject() {
   return (
@@ -20,12 +19,10 @@ export default function AllProject() {
       </Head>
 
       <main className={styles.main}>
-        <Title ml="xl">สร้างโปรเจค</Title>
-        <Accordion
-          variant="contained"
-          radius="lg"
-          my="xl"
-        >
+        <Title order={3} ml="xl">
+          สร้างโปรเจค
+        </Title>
+        <Accordion variant="contained" radius="lg" mt="md">
           <Accordion.Item value="prjectInfo">
             <Accordion.Control>ข้อมูลโปรเจค</Accordion.Control>
             <Accordion.Panel p={"md"}>
@@ -57,7 +54,10 @@ export default function AllProject() {
         </Accordion>
 
         {/* Table */}
-        <Box mt={35} p="sm">
+        <Title order={3} mt={55} ml="xl">
+          โปรเจคทั้งหมด
+        </Title>
+        <Box p="sm">
           <ProjectTable />
         </Box>
       </main>

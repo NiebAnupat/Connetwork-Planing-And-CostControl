@@ -3,7 +3,14 @@ export type TaskType = "task" | "subtask";
 export interface Task {
   id: string;
   title: string;
-  description: string;
+  vender: string;
+  quantity: number;
+  quatUnit: string;
+  materialCost: number;
+  totalMaterial: number;
+  labourCost: number;
+  totalLabour: number;
+  totalPrice: number;
   note: string;
   type: TaskType;
 }
