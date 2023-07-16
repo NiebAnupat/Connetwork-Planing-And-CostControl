@@ -5,6 +5,7 @@ import {
   Flex,
   Text,
   Title,
+  Menu,
   Input,
   Burger,
   Header,
@@ -13,18 +14,24 @@ import {
   MediaQuery,
   useMantineTheme,
 } from "@mantine/core";
-import { IconSearch } from "@tabler/icons-react";
+import {
+  IconUser,
+  IconSearch,
+  IconSettings,
+  IconCreditCard,
+} from "@tabler/icons-react";
 import MyNavbar from "./Navbar/MyNavbar";
 
 export default function Layout({ children }: PropsWithChildren) {
   const isIndex = useRouter().pathname === "/";
+  const isRegis = useRouter().pathname === "/Register";
 
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
 
   return (
     <AppShell
-      hidden={isIndex}
+      hidden={isIndex || isRegis}
       padding={0}
       styles={{
         main: {
@@ -74,7 +81,7 @@ export default function Layout({ children }: PropsWithChildren) {
                     w={{ xs: 200, sm: 300, md: 500 }}
                   />
                   <Avatar src="bg.jpg" radius="xl" />
-                  <Text fs={{ xs: "200",  }}>สุชานาถ คุ้มบุ่งคล้า</Text>
+                  <MyMenu />  
                 </Flex>
               </Grid.Col>
             </Grid>
@@ -84,5 +91,28 @@ export default function Layout({ children }: PropsWithChildren) {
     >
       {children}
     </AppShell>
+  );
+}
+
+function MyMenu() {
+  return (
+    <Menu withArrow position="bottom-end" offset={24}>
+      <Menu.Target>
+        <Text style={{ cursor: "pointer" }} fs={{ xs: "200" }}>
+          สุชานาถ คุ้มบุ่งคล้า
+        </Text>
+      </Menu.Target>
+
+      <Menu.Dropdown>
+        <Menu.Label>จัดการบัญชี</Menu.Label>
+        <Menu.Item icon={<IconUser size={14} />}>บัญชีของฉัน</Menu.Item>
+        <Menu.Item icon={<IconCreditCard size={14} />}>การชำระเงิน</Menu.Item>
+
+        <Menu.Divider />
+
+        <Menu.Label>จัดการระบบ</Menu.Label>
+        <Menu.Item icon={<IconSettings size={14} />}>ตั้งค่า</Menu.Item>
+      </Menu.Dropdown>
+    </Menu>
   );
 }
