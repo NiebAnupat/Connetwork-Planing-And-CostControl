@@ -8,10 +8,10 @@ datasource db {
 }
 
 model users {
-  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  id            String  @id @default(auto()) @map("_id") @db.ObjectId
   dateRemaining Int
   email         String
-  isFreeTrial   Int
+  isFreeTrial   Boolean
   password      String
   username      String
 }
