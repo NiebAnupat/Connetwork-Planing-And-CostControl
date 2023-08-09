@@ -16,13 +16,6 @@ import {
 } from "@tabler/icons-react";
 import NavLink from "./_NavLink";
 
-interface NavLinkData {
-  icon: React.ReactNode;
-  color: string;
-  label: string;
-  href?: string;
-}
-
 export default function MyNavbar({ opened }: { opened: boolean }) {
   const router = useRouter();
 

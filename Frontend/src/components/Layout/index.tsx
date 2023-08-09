@@ -1,16 +1,19 @@
-import React, { PropsWithChildren, useState } from "react";
+import React, { PropsWithChildren, useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { useUserStore } from "@/lib/userStore";
+import { useAccountStore } from "@/lib/accountStore";
 import {
   Grid,
   Flex,
   Text,
-  Title,
   Menu,
   Input,
+  Title,
   Burger,
   Header,
   Avatar,
   AppShell,
+  Indicator,
   MediaQuery,
   useMantineTheme,
 } from "@mantine/core";
@@ -21,14 +24,28 @@ import {
   IconCreditCard,
 } from "@tabler/icons-react";
 import MyNavbar from "./Navbar/MyNavbar";
+import { LoadingScreen } from "./LoadingScreen";
 
 export default function Layout({ children }: PropsWithChildren) {
-  const isIndex = useRouter().pathname === "/";
-  const isRegis = useRouter().pathname === "/Register";
+  const user = useUserStore((state) => state.user);
+  const account = useAccountStore((state) => state.isAccount);
+  const isLogout = useUserStore((state) => state.isLogout);
+  const [isMounted, setIsMounted] = useState(false);
+
+  const router = useRouter();
+  const isIndex = router.pathname === "/";
+  const isRegis = router.pathname === "/Register";
 
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
 
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) return null;
+
+  if (isLogout) return <LoadingScreen />;
   return (
     <AppShell
       hidden={isIndex || isRegis}
@@ -80,8 +97,8 @@ export default function Layout({ children }: PropsWithChildren) {
                     radius="xl"
                     w={{ xs: 200, sm: 300, md: 500 }}
                   />
-                  <Avatar src="bg.jpg" radius="xl" />
-                  <MyMenu />  
+                  <Avatar src="bg.jpg" size="2.6rem" radius="xl" />
+                  <MyMenu />
                 </Flex>
               </Grid.Col>
             </Grid>
@@ -106,7 +123,15 @@ function MyMenu() {
       <Menu.Dropdown>
         <Menu.Label>จัดการบัญชี</Menu.Label>
         <Menu.Item icon={<IconUser size={14} />}>บัญชีของฉัน</Menu.Item>
-        <Menu.Item icon={<IconCreditCard size={14} />}>การชำระเงิน</Menu.Item>
+        <Menu.Item
+          icon={<IconCreditCard size={14} />}
+          component="a"
+          href="/Account/Payment"
+        >
+          <Indicator color="red" size={10} offset={-2} position="top-end">
+            การชำระเงิน
+          </Indicator>
+        </Menu.Item>
 
         <Menu.Divider />
 

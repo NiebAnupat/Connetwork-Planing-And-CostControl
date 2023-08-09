@@ -1,5 +1,6 @@
 import Head from "next/head";
-import styles from "@/styles/HomePage.module.css";
+import styles from "@/styles/HomePage.module.css"
+import { useEffect } from "react";
 import { Title } from "@mantine/core";
 
 export default function HomePage() {

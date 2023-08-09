@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 
 .main {
   display: flex;
@@ -7,7 +7,7 @@
   align-items: center;
   padding: 0.5rem;
   min-height: 100vh;
-  background-image: url('/bg.jpg');
+  background-image: url("/bg.jpg");
   background-size: cover;
 }
 
@@ -15,7 +15,7 @@
   align-self: center;
   color: rgb(10, 94, 119);
   font-size: 2.4rem;
-  font-family:  Georgia, 'Times New Roman', Times, serif;
+  font-family: Georgia, "Times New Roman", Times, serif;
 
   @media (max-width: 768px) {
     font-size: 2rem;
@@ -33,7 +33,7 @@
   font-size: 1rem;
   margin-bottom: -1.75rem;
   color: rgb(10, 94, 119);
-  font-family:  Georgia, 'Times New Roman', Times, serif;
+  font-family: Georgia, "Times New Roman", Times, serif;
 
   @media (max-width: 768px) {
     font-size: 0.8rem;
@@ -49,15 +49,31 @@
 .box {
   margin: 0.2rem 0 0 0;
   padding: 2.5rem;
-  width: 22rem;
+  width: 24.5rem;
   background-color: rgba(255, 255, 255, 0.8);
   border-radius: 8px;
-  
+
   @media (max-width: 768px) {
-    width: 18.75rem;
+    width: 20rem;
   }
 
   @media (max-width: 480px) {
-    width: 15.625rem;
+    width: 16rem;
+  }
+}
+
+.boxReg {
+  margin: 0.2rem 0 0 0;
+  padding: 2.5rem;
+  width: 30rem;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+
+  @media (max-width: 768px) {
+    width: 22rem;
+  }
+
+  @media (max-width: 480px) {
+    width: 18rem;
   }
 }
