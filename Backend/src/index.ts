@@ -14,6 +14,10 @@ app.use(express.urlencoded({extended: true}));
 app.get('/', (req, res) => {
     console.log('have new request! ');
     res.send('Hello World!😒');
-});
+}); 
+
+import usersRouter from './users/router';
+
+app.use('/users', usersRouter);
 
 app.listen(PORT, () => console.log(`⚡Server running on port ${PORT} 💫`));
