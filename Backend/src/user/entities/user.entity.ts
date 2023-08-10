@@ -1,9 +1,9 @@
-import {Column, CreateDateColumn, DeleteDateColumn, Entity, ObjectIdColumn, UpdateDateColumn} from "typeorm";
+import {Column, CreateDateColumn, DeleteDateColumn, Entity, ObjectId, ObjectIdColumn, UpdateDateColumn} from "typeorm";
 
 @Entity({name: 'user'})
 export class User {
     @ObjectIdColumn()
-    _id: string;
+    _id: ObjectId;
 
     @Column({nullable: false})
     email: string;
