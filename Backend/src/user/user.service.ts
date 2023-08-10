@@ -15,7 +15,13 @@ export class UserService {
     }
 
     async create(createUserDto: CreateUserDto): Promise<User> {
-        return this.userRepository.save(createUserDto);
+        try {
+            const user = await this.userRepository.save(createUserDto);
+            if (!user) throw new ConflictException('Error while creating user');
+            return user;
+        } catch (e) {
+            throw e
+        }
     }
 
     async findAll(): Promise<User[]> {
@@ -65,7 +71,6 @@ export class UserService {
 
             if (!MongoObjectId.isValid(id)) throw new BadRequestException('Invalid user id')
 
-            // check if user exists
             const user = await this.userRepository.findOne({
                 where: {
                     _id: new MongoObjectId(id)
