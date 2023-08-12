@@ -1,8 +1,10 @@
-import {Controller, Get, Post, Body, Patch, Param, Delete} from '@nestjs/common';
+import {Controller, Get, Post, Body, Patch, Param, Delete, Query} from '@nestjs/common';
 import {UserService} from './user.service';
 import {CreateUserDto} from './dto/create-user.dto';
 import {UpdateUserDto} from './dto/update-user.dto';
-import {ObjectId} from "typeorm";
+import {FindOptionsWhere, ObjectId} from "typeorm";
+import {User} from "./entities/user.entity";
+
 
 @Controller('user')
 export class UserController {
@@ -11,6 +13,7 @@ export class UserController {
 
     @Post()
     create(@Body() createUserDto: CreateUserDto) {
+
         return this.userService.create(createUserDto);
     }
 
@@ -20,7 +23,7 @@ export class UserController {
     }
 
     @Get('find')
-    findOneByQuery(@Body() query: UpdateUserDto) {
+    findOneByQuery(@Query() query: FindOptionsWhere<User>) {
         return this.userService.findOneByQuery(query);
     }
 
@@ -38,4 +41,11 @@ export class UserController {
     remove(@Param('id') id: ObjectId) {
         return this.userService.remove(id);
     }
+
+    // Product Part--------------------------------------------------------------
+    // @Post('subscribe/')
+    subscribe(@Body() body: { userID: ObjectId, duration: number }) {
+        return this.userService.subscriptionProduct(body.userID, body.duration);
+    }
+
 }

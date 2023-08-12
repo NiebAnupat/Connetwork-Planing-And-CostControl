@@ -1,27 +1,34 @@
-import {Column, CreateDateColumn, DeleteDateColumn, Entity, ObjectId, ObjectIdColumn, UpdateDateColumn} from "typeorm";
+import {
+    Column,
+    CreateDateColumn,
+    DeleteDateColumn,
+    Entity,
+    ObjectId,
+    ObjectIdColumn,
+    UpdateDateColumn
+} from "typeorm";
+
 
 @Entity({name: 'user'})
 export class User {
     @ObjectIdColumn()
     _id: ObjectId;
 
-    @Column({nullable: false})
+    @Column()
     email: string;
 
-    @Column({nullable: false})
-    password: string;
+    @Column()
+    public password: string;
 
-    @Column({nullable: false})
+    @Column()
     username: string;
 
-    @Column({
-        default: false,
-    })
+    @Column()
+    role: string;
+    @Column()
     isFreeTrial: boolean;
 
-    @Column({
-        default: 0,
-    })
+    @Column()
     dateRemaining: number;
 
     @CreateDateColumn({
@@ -48,6 +55,9 @@ export class User {
         default: false,
     })
     isVerified: boolean;
+
+    @Column()
+    productData: any[];
 
 
 }
