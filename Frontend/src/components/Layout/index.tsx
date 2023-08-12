@@ -1,7 +1,6 @@
 import React, { PropsWithChildren, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useUserStore } from "@/lib/userStore";
-import { useAccountStore } from "@/lib/accountStore";
 import {
   Grid,
   Flex,
@@ -28,7 +27,7 @@ import { LoadingScreen } from "./LoadingScreen";
 
 export default function Layout({ children }: PropsWithChildren) {
   const user = useUserStore((state) => state.user);
-  const account = useAccountStore((state) => state.isAccount);
+  // const account = useAccountStore((state) => state.isAccount);
   const isLogout = useUserStore((state) => state.isLogout);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -60,7 +59,7 @@ export default function Layout({ children }: PropsWithChildren) {
       }}
       // Navbar
       navbarOffsetBreakpoint="sm"
-      navbar={<MyNavbar opened={!opened} />}
+      navbar={router.pathname !== "/Account/Payment" ?<MyNavbar opened={!opened} /> : undefined}
       // Header
       header={
         <Header height={{ base: 50, md: 60 }} p="md">

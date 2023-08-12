@@ -27,16 +27,16 @@ export default function Home() {
 
   const form = useForm({
     initialValues: {
-      username: username,
+      email: username,
       password: "",
     },
     validate: {
-      username: (value) => !value && "กรุณากรอกชื่อผู้ใช้งาน",
+      email: (value) => !value && "กรุณากรอกอีเมล์",
       password: (value) => !value && "กรุณากรอกรหัสผ่าน",
     },
   });
 
-  const handleLogin = async (username: any, password: any) => {
+  const handleLogin = async (email: any, password: any) => {
     setLoading(true);
     try {
       notifications.show({
@@ -106,13 +106,13 @@ export default function Home() {
           </Title>
           <form
             onSubmit={form.onSubmit((values) => {
-              handleLogin(values.username, values.password);
+              handleLogin(values.email, values.password);
             })}
           >
             <TextInput
-              label="ชื่อผู้ใช้"
-              placeholder="640xxxx"
-              {...form.getInputProps("username")}
+              label="อีเมล์"
+              placeholder="connetwork@gmail.com"
+              {...form.getInputProps("email")}
             />
             <PasswordInput
               mt="md"
