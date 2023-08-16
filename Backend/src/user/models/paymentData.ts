@@ -1,6 +1,18 @@
 import {Column} from "typeorm";
 
-export class PaymentData{
+export class PaymentData {
     @Column()
-    test: string;
+    uid: string;
+
+    @Column()
+    timestamp: string
+
+    @Column()
+    amount: number = 0
+
+    @Column()
+    imagePath: string;
+
+    @Column()
+    isVerified: boolean
 }

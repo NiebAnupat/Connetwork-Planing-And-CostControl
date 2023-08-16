@@ -13,5 +13,6 @@ export const SELECT_FIELD: FindOptionsSelect<User> | FindOptionsSelectByString<U
     'deleted_at',
     'isDeleted',
     'isVerified',
-    'productData'
+    'productData',
+    'paymentData'
 ]

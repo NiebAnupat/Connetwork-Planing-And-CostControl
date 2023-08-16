@@ -86,7 +86,6 @@ export class UserService {
             if (!user) throw new NotFoundException('User not found');
             return user;
         } catch (e) {
-            console.log({e})
             if (e instanceof NotFoundException || e instanceof BadRequestException) throw e;
             throw new ConflictException('Error while fetching user');
         }

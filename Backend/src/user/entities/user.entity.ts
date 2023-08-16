@@ -64,7 +64,7 @@ export class User {
     productData?: ProductData;
 
     @Column({
-        default: null,
+        default: [],
     })
     paymentData?: PaymentData[]
 

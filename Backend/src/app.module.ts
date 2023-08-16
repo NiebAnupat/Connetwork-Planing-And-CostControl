@@ -8,17 +8,19 @@ import {AuthModule} from './auth/auth.module';
 import {PaymentModule} from "./payment/payment.module";
 import {MulterModule} from "@nestjs/platform-express";
 import {diskStorage} from "multer";
+import {CloudStorageModule} from './cloud-storage/cloud-storage.module';
 
 @Module({
     imports: [
         ConfigModule.forRoot({
             isGlobal: true,
-            envFilePath: ['.env'],
+            envFilePath: ['.env', '.env.storage'],
         }),
         DatabaseModule,
         UserModule,
         AuthModule,
-        PaymentModule
+        PaymentModule,
+        CloudStorageModule
     ],
     controllers: [AppController],
     providers: [AppService],
