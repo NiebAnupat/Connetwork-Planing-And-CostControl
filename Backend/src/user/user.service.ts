@@ -1,10 +1,10 @@
 import {
     BadRequestException,
     ConflictException,
-    forwardRef,
+    forwardRef, HttpCode, HttpException, HttpStatus,
     Inject,
     Injectable,
-    NotFoundException
+    NotFoundException,
 } from '@nestjs/common';
 import {CreateUserDto} from './dto/create-user.dto';
 import {UpdateUserDto} from './dto/update-user.dto';
@@ -121,10 +121,15 @@ export class UserService {
             const result = await this.userRepository.update({
                 _id: new MongoObjectId(id)
             }, updateUserDto);
-            if (result.affected <= 0) throw new NotFoundException('User not found');
+            if (result.affected <= 0) throw new HttpException({
+                status: HttpStatus.NOT_MODIFIED,
+                error: 'No Modified'
+            }, HttpStatus.NOT_MODIFIED, {
+                cause: 'No Modified'
+            });
             return result;
         } catch (e) {
-            if (e instanceof NotFoundException || e instanceof BadRequestException) throw e;
+            if (e instanceof HttpException || e instanceof NotFoundException || e instanceof BadRequestException) throw e;
             throw new ConflictException('Error while updating user');
 
         }
@@ -137,10 +142,15 @@ export class UserService {
             const result = await this.userRepository.delete({
                 _id: new MongoObjectId(id)
             });
-            if (result.affected <= 0) throw new NotFoundException('User not found');
+            if (result.affected <= 0) throw new HttpException({
+                status: HttpStatus.NOT_MODIFIED,
+                error: 'No Modified'
+            }, HttpStatus.NOT_MODIFIED, {
+                cause: 'No Modified'
+            });
             return result;
         } catch (e) {
-            if (e instanceof NotFoundException || e instanceof BadRequestException) throw e;
+            if (e instanceof HttpException ||e instanceof NotFoundException ||e instanceof NotFoundException || e instanceof BadRequestException) throw e;
             throw new ConflictException('Error while deleting user');
         }
     }
@@ -194,11 +204,16 @@ export class UserService {
             }, updateData);
 
 
-            if (result.affected <= 0) throw new NotFoundException('User not found');
+            if (result.affected <= 0) throw new HttpException({
+                status: HttpStatus.NOT_MODIFIED,
+                error: 'No Modified'
+            }, HttpStatus.NOT_MODIFIED, {
+                cause: 'No Modified'
+            });
             return result;
         } catch (e) {
             console.log({e})
-            if (e instanceof NotFoundException || e instanceof BadRequestException) throw e;
+            if (e instanceof HttpException ||e instanceof NotFoundException || e instanceof BadRequestException) throw e;
             throw new ConflictException('Error while subscription product');
         }
     }

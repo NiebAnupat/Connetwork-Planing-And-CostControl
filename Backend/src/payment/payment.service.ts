@@ -6,6 +6,7 @@ import {UpdateUserDto} from "../user/dto/update-user.dto";
 import {User} from "../user/entities/user.entity";
 import {CloudStorageService} from "../cloud-storage/cloud-storage.service";
 import {StorageFile} from "../cloud-storage/models/storage-file";
+import {ObjectId} from "typeorm";
 
 @Injectable()
 export class PaymentService {
@@ -24,10 +25,10 @@ export class PaymentService {
         if (!user.paymentData) user.paymentData = []
 
         user.paymentData.push({
-            uid: createPaymentDto.uid,
+            mediaId: createPaymentDto.mediaId,
             timestamp: createPaymentDto.timestamp,
             amount: createPaymentDto.amount,
-            imagePath: createPaymentDto.imagePath,
+            filename: createPaymentDto.filename,
             isVerified: createPaymentDto.isVerified
         })
 
@@ -41,15 +42,23 @@ export class PaymentService {
 
     }
 
-    findAll() {
-        return `This action returns all payment`;
+    async findAll(userId: ObjectId) {
+        const users = await this.userService.findOne(userId)
+        return users.paymentData
     }
 
-    async findOne(path: string) {
+    async findOne(id: string, userId: ObjectId) {
+        const user = await this.userService.findOne(userId)
+        const payment = user.paymentData.find(payment => payment.mediaId === id)
+        if (!payment) throw new NotFoundException("payment not found")
+        return payment
+    }
+
+    async findOneImg(filename: string) {
 
         let storageFile: StorageFile
         try {
-            storageFile = await this.cloudStorageService.getWithMetaData(path)
+            storageFile = await this.cloudStorageService.getWithMetaData(filename)
         } catch (e) {
             if (e.message.toString().includes("No such object")) {
                 throw new NotFoundException("image not found");
@@ -62,11 +71,27 @@ export class PaymentService {
         return storageFile
     }
 
-    update(id: number, updatePaymentDto: UpdatePaymentDto) {
-        return `This action updates a #${id} payment`;
+    async update(criteria: { userId: ObjectId, mediaId: string }, updatePaymentDto: UpdatePaymentDto) {
+        const user = await this.userService.findOne(criteria.userId)
+        const payment = user.paymentData.find(payment => payment.mediaId === criteria.mediaId)
+        if (!payment) throw new NotFoundException("payment not found")
+        payment.isVerified = updatePaymentDto.isVerified
+        const updateUserDto: UpdateUserDto = {
+            paymentData: user.paymentData
+        }
+        const result = await this.userService.update(user._id, updateUserDto)
+        console.log({result})
+        return user.paymentData.find(payment => payment.mediaId === criteria.mediaId)
     }
 
-    remove(id: number) {
-        return `This action removes a #${id} payment`;
+    async remove(criteria: { userId: ObjectId, mediaId: string }) {
+        const user = await this.userService.findOne(criteria.userId)
+        const payment = user.paymentData.find(payment => payment.mediaId === criteria.mediaId)
+        if (!payment) throw new NotFoundException("payment not found")
+        user.paymentData = user.paymentData.filter(payment => payment.mediaId !== criteria.mediaId)
+        const updateUserDto: UpdateUserDto = {
+            paymentData: user.paymentData
+        }
+        return await this.userService.update(user._id, updateUserDto)
     }
 }

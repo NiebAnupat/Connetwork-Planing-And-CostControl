@@ -1,5 +1,6 @@
 import {IsNotEmpty, IsOptional} from "class-validator";
 import {ObjectId} from "typeorm";
+import {Transform} from "class-transformer";
 
 export class CreatePaymentDto {
 
@@ -7,17 +8,18 @@ export class CreatePaymentDto {
     userId: ObjectId;
 
     @IsOptional()
-    uid: string;
+    mediaId: string;
 
     @IsOptional()
     timestamp: string
 
     @IsNotEmpty()
-    amount: number = 0
+    amount: number
 
     @IsOptional()
-    imagePath: string;
+    filename: string;
 
     @IsOptional()
-    isVerified: boolean = false
+    @Transform(({value}) => value === 'true')
+    isVerified: boolean
 }

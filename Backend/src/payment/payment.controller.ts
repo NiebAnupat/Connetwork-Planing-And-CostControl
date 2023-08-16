@@ -9,7 +9,7 @@ import {
     UseInterceptors,
     UploadedFile,
     Header,
-    Res
+    Res, Query
 } from '@nestjs/common';
 import {Response} from "express";
 import {PaymentService} from './payment.service';
@@ -19,6 +19,7 @@ import {FileInterceptor} from "@nestjs/platform-express";
 import {CloudStorageService} from "../cloud-storage/cloud-storage.service";
 import {v4} from "uuid";
 import * as fs from "fs";
+import {ObjectId} from "typeorm";
 
 @Controller('payment')
 export class PaymentController {
@@ -33,46 +34,51 @@ export class PaymentController {
 
         createPaymentDto.timestamp = new Date().toISOString()
         const mediaId = v4()
-        const path = `${mediaId}-${file.filename}`
+        const ext = file.originalname.split('.').pop()
+        const path = `pay-slip/${mediaId}.${ext}`
         // const url = this.cloudStorageService.save(path, file.buffer)
         const buffer = fs.readFileSync(file.path)
-        await this.cloudStorageService.save(`pay-slip/${path}`, file.mimetype, buffer, [{
+        await this.cloudStorageService.save(path, file.mimetype, buffer, [{
             mediaId,
         }])
+        fs.unlinkSync(file.path)
 
-
-        createPaymentDto.uid = mediaId
-        createPaymentDto.imagePath = path
+        createPaymentDto.mediaId = mediaId
+        createPaymentDto.filename = `${mediaId}.${ext}`
 
 
         return this.paymentService.create(createPaymentDto);
 
-        // return this.paymentService.create(createPaymentDto);
+    }
+
+    @Get(':userId')
+    findAll(@Param('userId') userId: ObjectId) {
+        return this.paymentService.findAll(userId);
     }
 
     @Get()
-    findAll() {
-        return this.paymentService.findAll();
+    findOne(@Query() query: { mediaId: string, userId: ObjectId }) {
+        return this.paymentService.findOne(query.mediaId, query.userId);
     }
 
-    @Get(':path')
-    async findOne(@Param('path') path: string, @Res() res: Response) {
-        const storageFile = await this.paymentService.findOne(`pay-slip/${path}`);
+
+    @Get('img/:filename')
+    async findOneImg(@Param('filename') filename: string, @Res() res: Response) {
+        const storageFile = await this.paymentService.findOneImg(`pay-slip/${filename}`);
         res.setHeader("Content-Type", storageFile.contentType);
         res.setHeader("Content-Length", storageFile.buffer.length)
-        // res.setHeader("Content-Disposition", `attachment; filename=${path}`);
-        res.setHeader("Content-Disposition", `inline; filename=${path}`)
+        res.setHeader("Content-Disposition", `inline; filename=${filename}`)
         res.setHeader("Cache-Control", "max-age=1d");
         return res.end(storageFile.buffer);
     }
 
-    @Patch(':id')
-    update(@Param('id') id: string, @Body() updatePaymentDto: UpdatePaymentDto) {
-        return this.paymentService.update(+id, updatePaymentDto);
+    @Patch()
+    update(@Query() query: { mediaId: string, userId: ObjectId }, @Body() updatePaymentDto: UpdatePaymentDto) {
+        return this.paymentService.update({userId: query.userId, mediaId: query.mediaId}, updatePaymentDto);
     }
 
-    @Delete(':id')
-    remove(@Param('id') id: string) {
-        return this.paymentService.remove(+id);
+    @Delete()
+    remove(@Query() query: { mediaId: string, userId: ObjectId }) {
+        return this.paymentService.remove({userId: query.userId, mediaId: query.mediaId});
     }
 }
