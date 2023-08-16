@@ -174,14 +174,15 @@ export class UserService {
                 // add product data to user
             let updateData: UpdateUserDto = {
                     ...user, // Make sure to copy other properties from user if needed
-                    productData: user.productData ? [...user.productData] : [], // Copy existing product data if available
+                    // productData: user.productData ? [...user.productData] : [], // Copy existing product data if available
                     dateRemaining: 0, // Initialize dateRemaining as a number
                 };
-            if (user.productData?.length <= 0 || !user.productData) {
-                updateData.productData.push({
-                    test: 'test'
-                })
-            }
+            // if (!user.productData) {
+            //     updateData.productData = {
+            //         registeredProductID: [],
+            //         registeredProduct: []
+            //     }
+            // }
 
 
             // update dateRemaining

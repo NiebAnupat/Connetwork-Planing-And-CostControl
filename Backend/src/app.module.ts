@@ -5,6 +5,9 @@ import {UserModule} from "./user/user.module";
 import {ConfigModule} from "@nestjs/config";
 import {DatabaseModule} from './database/database.module';
 import {AuthModule} from './auth/auth.module';
+import {PaymentModule} from "./payment/payment.module";
+import {MulterModule} from "@nestjs/platform-express";
+import {diskStorage} from "multer";
 
 @Module({
     imports: [
@@ -15,6 +18,7 @@ import {AuthModule} from './auth/auth.module';
         DatabaseModule,
         UserModule,
         AuthModule,
+        PaymentModule
     ],
     controllers: [AppController],
     providers: [AppService],

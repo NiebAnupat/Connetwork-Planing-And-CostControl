@@ -7,6 +7,8 @@ import {
     ObjectIdColumn,
     UpdateDateColumn
 } from "typeorm";
+import {ProductData} from "../models/productData";
+import {PaymentData} from "../models/paymentData";
 
 
 @Entity({name: 'user'})
@@ -56,8 +58,15 @@ export class User {
     })
     isVerified: boolean;
 
-    @Column()
-    productData: any[];
+    @Column({
+        default: null,
+    })
+    productData?: ProductData;
+
+    @Column({
+        default: null,
+    })
+    paymentData?: PaymentData[]
 
 
 }

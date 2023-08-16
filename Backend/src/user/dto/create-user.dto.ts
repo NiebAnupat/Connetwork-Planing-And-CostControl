@@ -1,11 +1,12 @@
 import {IsArray, IsBoolean, IsEmail, IsHash, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString} from "class-validator";
 import {Transform} from "class-transformer";
 import {ObjectId} from "typeorm";
+import {ProductData} from "../models/productData";
+import {PaymentData} from "../models/paymentData";
 
 export class CreateUserDto {
 
-    @IsOptional()
-    _id: ObjectId;
+    readonly _id: ObjectId;
 
     @IsNotEmpty({message: 'Email is required'})
     @IsEmail({}, {message: 'Email is not valid'})
@@ -45,8 +46,10 @@ export class CreateUserDto {
     isVerified: boolean = false;
 
     @IsOptional()
-    @IsArray({message: 'productData must be array'})
-    productData: any[] = [];
+    productData: ProductData = null
+
+    @IsOptional()
+    paymentData: PaymentData[] = []
 
 
 }

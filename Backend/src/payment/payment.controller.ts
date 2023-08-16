@@ -1,34 +1,42 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { PaymentService } from './payment.service';
-import { CreatePaymentDto } from './dto/create-payment.dto';
-import { UpdatePaymentDto } from './dto/update-payment.dto';
+import {Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile} from '@nestjs/common';
+import {PaymentService} from './payment.service';
+import {CreatePaymentDto} from './dto/create-payment.dto';
+import {UpdatePaymentDto} from './dto/update-payment.dto';
+import {FileInterceptor} from "@nestjs/platform-express";
 
 @Controller('payment')
 export class PaymentController {
-  constructor(private readonly paymentService: PaymentService) {}
+    constructor(private readonly paymentService: PaymentService) {
+    }
 
-  @Post()
-  create(@Body() createPaymentDto: CreatePaymentDto) {
-    return this.paymentService.create(createPaymentDto);
-  }
+    @Post("/")
+    @UseInterceptors(FileInterceptor('slipImage'))
+    create(@Body() createPaymentDto: CreatePaymentDto, @UploadedFile() file: Express.Multer.File) {
 
-  @Get()
-  findAll() {
-    return this.paymentService.findAll();
-  }
+        console.log({file})
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.paymentService.findOne(+id);
-  }
+        return file
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePaymentDto: UpdatePaymentDto) {
-    return this.paymentService.update(+id, updatePaymentDto);
-  }
+        // return this.paymentService.create(createPaymentDto);
+    }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.paymentService.remove(+id);
-  }
+    @Get()
+    findAll() {
+        return this.paymentService.findAll();
+    }
+
+    @Get(':id')
+    findOne(@Param('id') id: string) {
+        return this.paymentService.findOne(+id);
+    }
+
+    @Patch(':id')
+    update(@Param('id') id: string, @Body() updatePaymentDto: UpdatePaymentDto) {
+        return this.paymentService.update(+id, updatePaymentDto);
+    }
+
+    @Delete(':id')
+    remove(@Param('id') id: string) {
+        return this.paymentService.remove(+id);
+    }
 }
