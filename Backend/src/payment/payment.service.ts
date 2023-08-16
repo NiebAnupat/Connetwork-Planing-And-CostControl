@@ -80,7 +80,6 @@ export class PaymentService {
             paymentData: user.paymentData
         }
         const result = await this.userService.update(user._id, updateUserDto)
-        console.log({result})
         return user.paymentData.find(payment => payment.mediaId === criteria.mediaId)
     }
 
@@ -92,6 +91,7 @@ export class PaymentService {
         const updateUserDto: UpdateUserDto = {
             paymentData: user.paymentData
         }
+        await this.cloudStorageService.delete(`pay-slip/${payment.filename}`)
         return await this.userService.update(user._id, updateUserDto)
     }
 }
