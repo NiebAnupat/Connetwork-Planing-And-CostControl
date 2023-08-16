@@ -5,6 +5,8 @@ import {MulterModule} from "@nestjs/platform-express";
 import {diskStorage} from "multer";
 import {existsSync, mkdirSync} from 'fs';
 import * as path from "path";
+import {CloudStorageModule} from "../cloud-storage/cloud-storage.module";
+import {UserModule} from "../user/user.module";
 
 @Module({
     imports: [
@@ -21,7 +23,6 @@ import * as path from "path";
                     cb(new BadRequestException("Please upload an image file (jpg, jpeg, png, gif)."), false);
                 }
             },
-            // dest: './public/upload',
             storage: diskStorage({
                 destination: function (req, file, cb) {
                     const uploadPath = path.resolve('./public/upload')
@@ -36,7 +37,8 @@ import * as path from "path";
                 }
             })
         }),
-
+        CloudStorageModule,
+        UserModule
     ],
     controllers: [PaymentController],
     providers: [PaymentService],
