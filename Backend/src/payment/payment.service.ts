@@ -29,6 +29,7 @@ export class PaymentService {
             timestamp: createPaymentDto.timestamp,
             amount: createPaymentDto.amount,
             filename: createPaymentDto.filename,
+            qrCode : createPaymentDto.qrCode,
             isVerified: createPaymentDto.isVerified
         })
 
@@ -38,7 +39,7 @@ export class PaymentService {
 
         await this.userService.update(user._id, updateUserDto)
 
-        return user
+        return user.paymentData.find(payment => payment.mediaId === createPaymentDto.mediaId)
 
     }
 
@@ -76,6 +77,10 @@ export class PaymentService {
         const payment = user.paymentData.find(payment => payment.mediaId === criteria.mediaId)
         if (!payment) throw new NotFoundException("payment not found")
         payment.isVerified = updatePaymentDto.isVerified
+
+
+        // IMPLEMENT : when update image , delete old image in cloud storage
+
         const updateUserDto: UpdateUserDto = {
             paymentData: user.paymentData
         }

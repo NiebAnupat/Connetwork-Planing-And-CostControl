@@ -4,7 +4,10 @@ export const configValidationSchema = Joi.object({
     MONGO_URI: Joi.string().required(),
     SECRET_KEY: Joi.string().required(),
     PROJECT_ID: Joi.string().required(),
-    PRIVATE_KEY: Joi.string().required(),
-    CLIENT_EMAIL: Joi.string().required(),
+    // PRIVATE_KEY: Joi.string().required(),
+    // CLIENT_EMAIL: Joi.string().required(),
     STORAGE_MEDIA_BUCKET: Joi.string().required(),
+    SLIPOK_API_URL: Joi.string().required(),
+    SLIPOK_BRAND_ID: Joi.string().required(),
+    SLIPOK_API_KEY: Joi.string().required(),
 })

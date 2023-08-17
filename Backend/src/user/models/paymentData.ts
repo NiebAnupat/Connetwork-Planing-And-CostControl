@@ -14,5 +14,8 @@ export class PaymentData {
     filename: string;
 
     @Column()
+    qrCode: string;
+
+    @Column()
     isVerified: boolean
 }

@@ -20,6 +20,9 @@ export class CreatePaymentDto {
     filename: string;
 
     @IsOptional()
+    qrCode: string;
+
+    @IsOptional()
     @Transform(({value}) => value === 'true')
     isVerified: boolean
 }
