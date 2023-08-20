@@ -2,7 +2,7 @@ import {Column} from "typeorm";
 
 export class PaymentData {
     @Column()
-    mediaId: string;
+    payId: string;
 
     @Column()
     timestamp: string
@@ -12,9 +12,6 @@ export class PaymentData {
 
     @Column()
     filename: string;
-
-    @Column()
-    qrCode: string;
 
     @Column()
     isVerified: boolean

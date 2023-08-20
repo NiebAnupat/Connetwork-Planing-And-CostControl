@@ -17,7 +17,7 @@ import {UpdatePaymentDto} from './dto/update-payment.dto';
 import {FileInterceptor} from "@nestjs/platform-express";
 import {CloudStorageService} from "../cloud-storage/cloud-storage.service";
 import {v4} from "uuid";
-import { readFileSync, unlinkSync} from "fs";
+import {readFileSync, unlinkSync} from "fs";
 import {ObjectId} from "typeorm";
 import {UserService} from "../user/user.service";
 import {UpdateUserDto} from "../user/dto/update-user.dto";
@@ -27,6 +27,8 @@ import Jimp from "jimp";
 
 @Controller('payment')
 export class PaymentController {
+    private qr = new QrCode()
+
     constructor(
         private readonly paymentService: PaymentService,
         private readonly userService: UserService,
@@ -39,9 +41,9 @@ export class PaymentController {
     async create(@Body() createPaymentDto: CreatePaymentDto, @UploadedFile() file: Express.Multer.File) {
 
         createPaymentDto.timestamp = new Date().toISOString()
-        const mediaId = v4()
+        const payId = v4()
         const ext = file.originalname.split('.').pop()
-        const path = `pay-slip/${mediaId}.${ext}`
+        const path = `pay-slip/${payId}.${ext}`
         // const url = this.cloudStorageService.save(path, file.buffer)
         const buffer = readFileSync(file.path)
 
@@ -49,12 +51,12 @@ export class PaymentController {
         // if (!qrCode.result) throw new BadRequestException("invalid slip")
         // console.log('QR Code content:', qrCode.result);
 
-        createPaymentDto.mediaId = mediaId
-        createPaymentDto.filename = `${mediaId}.${ext}`
+        createPaymentDto.payId = payId
+        createPaymentDto.filename = `${payId}.${ext}`
         // createPaymentDto.qrCode = qrCode.result
 
         await this.cloudStorageService.save(path, file.mimetype, buffer, [{
-            mediaId,
+            payId,
         }])
         unlinkSync(file.path)
 
@@ -69,8 +71,8 @@ export class PaymentController {
     }
 
     @Get()
-    findOne(@Query() query: { mediaId: string, userId: ObjectId }) {
-        return this.paymentService.findOne(query.mediaId, query.userId);
+    findOne(@Query() query: { payId: string, userId: ObjectId }) {
+        return this.paymentService.findOne(query.payId, query.userId);
     }
 
 
@@ -86,37 +88,61 @@ export class PaymentController {
 
 
     @Patch()
-    update(@Query() query: { mediaId: string, userId: ObjectId }, @Body() updatePaymentDto: UpdatePaymentDto) {
-        return this.paymentService.update({userId: query.userId, mediaId: query.mediaId}, updatePaymentDto);
+    @UseInterceptors(FileInterceptor('slipImage'))
+    async update(@Query() query: { payId: string, userId: ObjectId }, @Body() updatePaymentDto: UpdatePaymentDto, @UploadedFile() file: Express.Multer.File) {
+        if (file) {
+
+            // when update image , delete old image in cloud storage
+            const payment = await this.paymentService.findOne(query.payId, query.userId)
+            if (!payment) throw new NotFoundException("payment not found")
+            await this.cloudStorageService.delete(`pay-slip/${payment.filename}`)
+
+            // save new image to cloud storage
+            const ext = file.originalname.split('.').pop()
+            const path = `pay-slip/${query.payId}.${ext}`
+            const buffer = readFileSync(file.path)
+            await this.cloudStorageService.save(path, file.mimetype, buffer, [{
+                payId: query.payId,
+            }])
+            unlinkSync(file.path)
+            updatePaymentDto.filename = `${query.payId}.${ext}`
+        }
+        return this.paymentService.update({userId: query.userId, payId: query.payId}, updatePaymentDto);
     }
 
     @Delete()
-    remove(@Query() query: { mediaId: string, userId: ObjectId }) {
-        return this.paymentService.remove({userId: query.userId, mediaId: query.mediaId});
+    remove(@Query() query: { payId: string, userId: ObjectId }) {
+        return this.paymentService.remove({userId: query.userId, payId: query.payId});
     }
 
     @Patch('verify')
-    async verify(@Query() query: { mediaId: string, userId: ObjectId }) {
+    async verify(@Query() query: { payId: string, userId: ObjectId }) {
         const {SLIPOK_API_URL, SLIPOK_BRAND_ID, SLIPOK_API_KEY} = process.env
         const user = await this.userService.findOne(query.userId)
-        const payment = user.paymentData.find(payment => payment.mediaId === query.mediaId)
+        const payment = user.paymentData.find(payment => payment.payId === query.payId)
         if (!payment) throw new NotFoundException("payment not found")
         const slipImg = await this.paymentService.findOneImg(`pay-slip/${payment.filename}`);
 
         const buffer = slipImg.buffer
-        const qr = new QrCode()
+
         const bitmap = await Jimp.read(buffer).then(image => image.bitmap).catch(e => {
-            console.log({e})
+            throw new BadRequestException({
+                success: false,
+                message: "invalid slip"
+            })
         })
 
         let qrString = ""
-        qr.callback = function (err, value) {
+        this.qr.callback = function (err, value) {
             if (err) {
-                throw new BadRequestException("invalid slip")
+                throw new BadRequestException({
+                    success: false,
+                    message: "invalid slip"
+                })
             }
             qrString = value.result
         }
-        await qr.decode(bitmap)
+        await this.qr.decode(bitmap)
         const res = await axios.post(`${SLIPOK_API_URL}/${SLIPOK_BRAND_ID}`, {
             data: qrString,
         }, {
@@ -136,9 +162,15 @@ export class PaymentController {
                 paymentData: user.paymentData
             }
             await this.userService.update(user._id, updateUserDto)
-            return res
+            return {
+                success: true,
+                message: "payment verified"
+            }
         } else {
-            throw new BadRequestException("invalid slip")
+            throw new BadRequestException({
+                success: false,
+                message: "invalid slip"
+            })
         }
     }
 }

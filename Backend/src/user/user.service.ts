@@ -123,9 +123,9 @@ export class UserService {
             }, updateUserDto);
             if (result.affected <= 0) throw new HttpException({
                 status: HttpStatus.NOT_MODIFIED,
-                error: 'No Modified'
+                error: 'No Modified',
             }, HttpStatus.NOT_MODIFIED, {
-                cause: 'No Modified'
+                cause: 'No Modified',
             });
             return result;
         } catch (e) {

@@ -7,6 +7,7 @@ import {User} from "../user/entities/user.entity";
 import {CloudStorageService} from "../cloud-storage/cloud-storage.service";
 import {StorageFile} from "../cloud-storage/models/storage-file";
 import {ObjectId} from "typeorm";
+import {PaymentData} from "../user/models/paymentData";
 
 @Injectable()
 export class PaymentService {
@@ -25,11 +26,10 @@ export class PaymentService {
         if (!user.paymentData) user.paymentData = []
 
         user.paymentData.push({
-            mediaId: createPaymentDto.mediaId,
+            payId: createPaymentDto.payId,
             timestamp: createPaymentDto.timestamp,
             amount: createPaymentDto.amount,
             filename: createPaymentDto.filename,
-            qrCode : createPaymentDto.qrCode,
             isVerified: createPaymentDto.isVerified
         })
 
@@ -39,7 +39,7 @@ export class PaymentService {
 
         await this.userService.update(user._id, updateUserDto)
 
-        return user.paymentData.find(payment => payment.mediaId === createPaymentDto.mediaId)
+        return user.paymentData.find(payment => payment.payId === createPaymentDto.payId)
 
     }
 
@@ -50,7 +50,7 @@ export class PaymentService {
 
     async findOne(id: string, userId: ObjectId) {
         const user = await this.userService.findOne(userId)
-        const payment = user.paymentData.find(payment => payment.mediaId === id)
+        const payment = user.paymentData.find(payment => payment.payId === id)
         if (!payment) throw new NotFoundException("payment not found")
         return payment
     }
@@ -72,27 +72,34 @@ export class PaymentService {
         return storageFile
     }
 
-    async update(criteria: { userId: ObjectId, mediaId: string }, updatePaymentDto: UpdatePaymentDto) {
+    async update(criteria: { userId: ObjectId, payId: string }, updatePaymentDto: UpdatePaymentDto) {
         const user = await this.userService.findOne(criteria.userId)
-        const payment = user.paymentData.find(payment => payment.mediaId === criteria.mediaId)
+        const payment: PaymentData = user.paymentData.find(payment => payment.payId === criteria.payId)
         if (!payment) throw new NotFoundException("payment not found")
-        payment.isVerified = updatePaymentDto.isVerified
 
 
-        // IMPLEMENT : when update image , delete old image in cloud storage
+        user.paymentData = user.paymentData.map(payment => {
+            if (payment.payId === criteria.payId) {
+                return {
+                    ...payment,
+                    ...updatePaymentDto,
+                }
+            }
+            return payment
+        })
 
         const updateUserDto: UpdateUserDto = {
             paymentData: user.paymentData
         }
         const result = await this.userService.update(user._id, updateUserDto)
-        return user.paymentData.find(payment => payment.mediaId === criteria.mediaId)
+        return user.paymentData.find(payment => payment.payId === criteria.payId)
     }
 
-    async remove(criteria: { userId: ObjectId, mediaId: string }) {
+    async remove(criteria: { userId: ObjectId, payId: string }) {
         const user = await this.userService.findOne(criteria.userId)
-        const payment = user.paymentData.find(payment => payment.mediaId === criteria.mediaId)
+        const payment = user.paymentData.find(payment => payment.payId === criteria.payId)
         if (!payment) throw new NotFoundException("payment not found")
-        user.paymentData = user.paymentData.filter(payment => payment.mediaId !== criteria.mediaId)
+        user.paymentData = user.paymentData.filter(payment => payment.payId !== criteria.payId)
         const updateUserDto: UpdateUserDto = {
             paymentData: user.paymentData
         }

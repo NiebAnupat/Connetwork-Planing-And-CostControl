@@ -8,19 +8,17 @@ export class CreatePaymentDto {
     userId: ObjectId;
 
     @IsOptional()
-    mediaId: string;
+    payId: string;
 
     @IsOptional()
     timestamp: string
 
     @IsNotEmpty()
+    @Transform(({value}) => Number(value))
     amount: number
 
     @IsOptional()
     filename: string;
-
-    @IsOptional()
-    qrCode: string;
 
     @IsOptional()
     @Transform(({value}) => value === 'true')
