@@ -9,9 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.0.8",
+    "@dnd-kit/modifiers": "^6.0.1",
+    "@dnd-kit/sortable": "^7.0.2",
     "@emotion/react": "^11.11.1",
     "@emotion/server": "^11.11.0",
     "@mantine/core": "^6.0.13",
+    "@mantine/dropzone": "^6.0.18",
     "@mantine/ds": "^6.0.13",
     "@mantine/form": "^6.0.13",
     "@mantine/hooks": "^6.0.13",
@@ -24,8 +28,10 @@
     "@types/react-dom": "18.2.5",
     "connetwork-planing-and-costcontrol": "file:..",
     "next": "13.4.6",
+    "nookies": "^2.5.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "typescript": "5.1.3"
+    "typescript": "5.1.3",
+    "zustand": "^4.3.9"
   }
 }

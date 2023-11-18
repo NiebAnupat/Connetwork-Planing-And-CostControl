@@ -1,121 +1,89 @@
-import { useState } from "react";
-import { createStyles, Navbar, Group, getStylesRef, rem, Text } from "@mantine/core";
-import { IconHome2, IconLogout, Icon24Hours } from "@tabler/icons-react";
-import { MantineLogo } from "@mantine/ds";
+import React from "react";
+import { useRouter } from "next/router";
+import {
+  Navbar,
+  UnstyledButton,
+  Group,
+  ThemeIcon,
+  Text,
+  Divider,
+} from "@mantine/core";
+import {
+  IconHome,
+  IconTable,
+  IconChartArrows,
+  IconLogout,
+} from "@tabler/icons-react";
+import NavLink from "./_NavLink";
 
-const useStyles = createStyles((theme) => ({
-  header: {
-    paddingBottom: theme.spacing.md,
-    marginBottom: `calc(${theme.spacing.md} * 1.5)`,
-    borderBottom: `${rem(1)} solid ${
-      theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[2]
-    }`,
-  },
+export default function MyNavbar({ opened }: { opened: boolean }) {
+  const router = useRouter();
 
-  footer: {
-    paddingTop: theme.spacing.md,
-    marginTop: theme.spacing.md,
-    borderTop: `${rem(1)} solid ${
-      theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[2]
-    }`,
-  },
-
-  link: {
-    ...theme.fn.focusStyles(),
-    display: "flex",
-    alignItems: "center",
-    textDecoration: "none",
-    fontSize: theme.fontSizes.sm,
-    color:
-      theme.colorScheme === "dark"
-        ? theme.colors.dark[1]
-        : theme.colors.gray[7],
-    padding: `${theme.spacing.xs} ${theme.spacing.sm}`,
-    borderRadius: theme.radius.sm,
-    fontWeight: 500,
-
-    "&:hover": {
-      backgroundColor:
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[6]
-          : theme.colors.gray[0],
-      color: theme.colorScheme === "dark" ? theme.white : theme.black,
-
-      [`& .${getStylesRef("icon")}`]: {
-        color: theme.colorScheme === "dark" ? theme.white : theme.black,
-      },
+  const NavLinkData = [
+    {
+      icon: <IconHome size="1rem" />,
+      color: "blue",
+      label: "แดชบอร์ด",
+      href: "/HomePage",
     },
-  },
-
-  linkIcon: {
-    ref: getStylesRef("icon"),
-    color:
-      theme.colorScheme === "dark"
-        ? theme.colors.dark[2]
-        : theme.colors.gray[6],
-    marginRight: theme.spacing.sm,
-  },
-
-  linkActive: {
-    "&, &:hover": {
-      backgroundColor: theme.fn.variant({
-        variant: "light",
-        color: theme.primaryColor,
-      }).background,
-      color: theme.fn.variant({ variant: "light", color: theme.primaryColor })
-        .color,
-      [`& .${getStylesRef("icon")}`]: {
-        color: theme.fn.variant({ variant: "light", color: theme.primaryColor })
-          .color,
-      },
+    {
+      icon: <IconChartArrows size="1rem" />,
+      color: "red",
+      label: "ตารางการทำงาน",
+      href: "/GanntChart",
     },
-  },
-}));
-
-const data = [
-  { link: "", label: "หน้าหลัก", icon: IconHome2 },
-  { link: "", label: "อื่นๆ", icon: Icon24Hours },
-];
-
-export default function MyNavbar() {
-  const { classes, cx } = useStyles();
-  const [active, setActive] = useState("Billing");
-
-  const links = data.map((item) => (
-    <a
-      className={cx(classes.link, {
-        [classes.linkActive]: item.label === active,
-      })}
-      href={item.link}
-      key={item.label}
-      onClick={(event) => {
-        event.preventDefault();
-        setActive(item.label);
-      }}
-    >
-      <item.icon className={classes.linkIcon} stroke={1.5} />
-      <span>{item.label}</span>
-    </a>
-  ));
+    {
+      icon: <IconTable size="1rem" />,
+      color: "teal",
+      label: "โปรเจคทั้งหมด",
+      href: "/AllProject",
+    },
+  ];
 
   return (
-    <Navbar height={"100%"} width={{ xs: 180, md: 250, lg: 260 }} p="xs">
+    <Navbar
+      p="md"
+      hiddenBreakpoint="sm"
+      hidden={!opened}
+      width={{ sm: 200, lg: 230 }}
+    >
       <Navbar.Section grow>
-        <Group className={classes.header} position="apart">
-          <Text>Connetwork</Text>
-        </Group>
-        {links}
+        {NavLinkData.map((link) => (
+          <NavLink
+            key={link.label}
+            icon={link.icon}
+            color={link.color}
+            label={link.label}
+            href={link.href}
+          />
+        ))}
       </Navbar.Section>
+      <Divider my={"md"} />
+      <Navbar.Section>
+        <UnstyledButton
+          onClick={() => router.push("/")}
+          sx={(theme) => ({
+            display: "block",
+            width: "100%",
+            padding: theme.spacing.xs,
+            borderRadius: theme.radius.sm,
+            color:
+              theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
 
-      <Navbar.Section className={classes.footer}>
-        <a
-          href=""
-          className={classes.link}
-          onClick={(event) => event.preventDefault()}
+            "&:hover": {
+              backgroundColor:
+                theme.colors["red"][theme.colorScheme === "dark" ? 9 : 0],
+            },
+          })}
         >
-          <IconLogout className={classes.linkIcon} stroke={1.5} />
-          <span>Logout</span>
-        </a>
+          <Group>
+            <ThemeIcon color={"red.5"} variant="light">
+              <IconLogout />
+            </ThemeIcon>
+
+            <Text size="sm">ออกจากระบบ</Text>
+          </Group>
+        </UnstyledButton>
       </Navbar.Section>
     </Navbar>
   );

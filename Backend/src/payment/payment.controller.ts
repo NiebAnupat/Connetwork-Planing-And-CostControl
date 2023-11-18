@@ -108,7 +108,7 @@ export class PaymentController {
             updatePaymentDto.filename = `${query.payId}.${ext}`
         }
         return this.paymentService.update({userId: query.userId, payId: query.payId}, updatePaymentDto);
-    }                        
+    }
 
     @Delete()
     remove(@Query() query: { payId: string, userId: ObjectId }) {

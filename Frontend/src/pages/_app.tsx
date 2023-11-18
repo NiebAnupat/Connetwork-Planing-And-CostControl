@@ -2,7 +2,7 @@ import { AppProps } from "next/app";
 import { ModalsProvider } from "@mantine/modals";
 import { Notifications } from "@mantine/notifications";
 import { Global, MantineProvider } from "@mantine/core";
-import Layout from "@/components/Layout/Layout";
+import Layout from "@/components/Layout";
 
 function FontStyles() {
   return (
